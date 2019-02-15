@@ -56,7 +56,6 @@ class Movie(db.Model):  # 表名将会是 movie
 def forge():
     """Generate fake data."""
     db.create_all()
-
     # 全局的两个变量移动到这个函数内
     name = 'Grey Li'
     movies = [
@@ -71,43 +70,32 @@ def forge():
         {'title': 'WALL-E', 'year': '2008'},
         {'title': 'The Pork of Music', 'year': '2012'},
     ]
-
     user = User(name=name)
     db.session.add(user)
     for m in movies:
         movie = Movie(title=m['title'], year=m['year'])
         db.session.add(movie)
-
     db.session.commit()
     click.echo('Done.')
+
+@app.context_processor
+def inject_user():
+    user = User.query.first()
+    return dict(user=user)
 	
 @app.route('/')
 def index():
-    user = User.query.first()  # 读取用户记录
+  # 读取用户记录
     movies = Movie.query.all()  # 读取所有电影记录
-    return render_template('index.html', user=user, movies=movies)
+    return render_template('index.html', movies=movies)
+
+@app.errorhandler(404)  # 传入要处理的错误代码
+def page_not_found(e):  # 接受异常对象作为参数
+    return render_template('404.html', user=user), 404  
 	
 
-@app.route('/hello')
-def hello_world():
-    return 'Hello, World!'
 
-
-
-@app.route('/hello/<name>')
-def hello(name=None):
-    return render_template('hello.html', name=name)
-
-@app.route('/home/<name>')
-def home(name):
-    return 'Welcome to %s!' % name
-
-
-@app.route('/test')
-def test_url_for():
-    print(url_for('hello_world',name='zyf'))
-    print(url_for('home',name='zyf'))
-    return 'test page'
 
 if __name__=='__main__':
+    app.debug = True
     app.run()
