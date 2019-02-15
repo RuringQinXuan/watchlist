@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ name }}'s Watchlist</title>
+</head>
+<body>
+    <h2>{{ name }}'s Watchlist</h2>
+    {#  length filter were applied to obataining the length of movies #}
+    <p>{{ movies|length }} Titles</p>
+    <ul>
+        {% for movie in movies %}  {# 迭代 movies 变量 #}
+        <li>{{ movie.title }} - {{ movie.year }}</li>  {# 等同于 movie['title'] #}
+        {% endfor %}  {# 使用 endfor 标签结束 for 语句 #}
+    </ul>
+    <footer>
+        <small>&copy; 2019 <a href="http://helloflask.com/tutorial">HelloFlask</a></small>
+    </footer>
+</body>
+</html>
